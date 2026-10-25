@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.session.MediaController;
 import android.media.session.MediaSessionManager;
@@ -23,8 +24,8 @@ import android.view.accessibility.AccessibilityEvent;
  *  - whenever the Amazon launcher comes to the front anyway (after boot, or when
  *    an app exits), Glass is brought straight back on top.
  *  - every key press re-arms the screensaver's idle timer (any app, not just Glass).
- * Event-driven only: it receives window changes from the Amazon launcher's
- * package and key events, and does nothing in between.
+ * Event-driven only: it receives window changes and key events, and does
+ * nothing in between.
  */
 public class HomeButtonService extends AccessibilityService {
 
@@ -36,7 +37,9 @@ public class HomeButtonService extends AccessibilityService {
 
     /**
      * Set by the "Fire TV Home" tile: Amazon's home screen is left alone until the next Home
-     * press, so it can be browsed. In memory only, so a restart always brings Glass back.
+     * press or until another app's screen opens, so it can be browsed. The stick's remote doesn't
+     * always reach the key filter, and without the second way out the visit never ended.
+     * In memory only, so a restart always brings Glass back.
      */
     private static volatile boolean visitingFireHome;
 
@@ -126,12 +129,28 @@ public class HomeButtonService extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         // Only Amazon's home screen itself: Fire OS Settings (MainSettingsActivity) and the side
         // menu live in the same package, and reacting to those would bounce them back to Glass.
+        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return;
+        CharSequence pkg = event.getPackageName();
         CharSequence cls = event.getClassName();
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                && !visitingFireHome
-                && AMAZON_LAUNCHER.contentEquals(event.getPackageName())
-                && cls != null && cls.toString().contains("HomeActivity")) {
-            openGlass();
+        if (pkg == null || cls == null) return;
+        if (!AMAZON_LAUNCHER.contentEquals(pkg)) {
+            if (visitingFireHome && isOtherAppsScreen(pkg.toString(), cls.toString())) visitingFireHome = false;
+            return;
+        }
+        // Fire OS Settings lives in the launcher's package: opening it also ends a visit (its
+        // details pages don't, so Back from one stays on Amazon's home)
+        if (cls.toString().contains("SettingsActivity")) visitingFireHome = false;
+        else if (!visitingFireHome && cls.toString().contains("HomeActivity")) openGlass();
+    }
+
+    /** A real activity of another app, not Glass, a system overlay or a popup window. */
+    private boolean isOtherAppsScreen(String pkg, String cls) {
+        if (pkg.equals(getPackageName()) || pkg.equals("com.android.systemui")) return false;
+        try {
+            getPackageManager().getActivityInfo(new ComponentName(pkg, cls), 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
     }
 
