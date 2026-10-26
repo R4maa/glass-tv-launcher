@@ -22,8 +22,8 @@ android {
         applicationId 'com.ivantrj.glasslauncher'
         minSdk 28          // Fire OS 7 is Android 9 / API 28; Fire OS 8 is Android 11 / API 30
         targetSdk 30
-        versionCode 2
-        versionName '1.1.0'
+        versionCode 3
+        versionName '1.1.1'
     }
 
     signingConfigs {

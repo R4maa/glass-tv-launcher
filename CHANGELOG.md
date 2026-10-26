@@ -4,6 +4,13 @@ What changed in each Glass TV release. Download the latest `glass.apk` from
 [Releases](https://github.com/R4maa/glass-tv-launcher/releases/latest); Glass also tells you when there's a new one
 (see [Updates](https://github.com/R4maa/glass-tv-launcher#-updates)).
 
+## 1.1.1 · 2026-10-25
+
+### Fixed
+
+- After Glass updated itself, the TV showed Amazon's home instead of Glass until you pressed Home. Glass now opens
+  again by itself as soon as the update is installed, starting with this one.
+
 ## 1.1.0 · 2026-10-25
 
 The first release with a ready-made APK, so you no longer need to build Glass yourself.

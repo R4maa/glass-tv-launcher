@@ -104,6 +104,13 @@
         <!-- Hears how an update install went (Updater.install) -->
         <receiver android:name=".Updater$InstallResult" android:exported="false" />
 
+        <!-- After an update, Glass opens again instead of leaving Amazon's home on screen -->
+        <receiver android:name=".HomeButtonService$Updated" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
         <!-- Fire OS won't let the Amazon launcher be disabled: this redirects Home to Glass -->
         <service
             android:name=".HomeButtonService"

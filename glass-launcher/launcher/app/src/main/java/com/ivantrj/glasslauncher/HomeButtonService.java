@@ -68,10 +68,31 @@ public class HomeButtonService extends AccessibilityService {
         if (running != null) running.armScreensaver();
     }
 
+    /** Set when Glass was just updated and the service hadn't reconnected yet: open Glass once it has. */
+    private static volatile boolean openAfterUpdate;
+
+    /**
+     * Glass was just replaced by an update. The install restarts it, and Amazon's home comes up while
+     * this service is still reconnecting, so the redirect misses it: bring Glass back explicitly.
+     */
+    public static final class Updated extends android.content.BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (!Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction())) return;
+            HomeButtonService service = running;
+            if (service != null) service.openGlass();
+            else openAfterUpdate = true;
+        }
+    }
+
     @Override
     protected void onServiceConnected() {
         running = this;
         armScreensaver();
+        if (openAfterUpdate) {
+            openAfterUpdate = false;
+            openGlass();
+        }
     }
 
     @Override
