@@ -2,6 +2,18 @@ plugins {
     id 'com.android.application'
 }
 
+// The release key lives outside the repo (~/.glass-tv/keystore.properties, or the file named by
+// GLASS_KEYSTORE; see RELEASING.md). Without it a release build stops: a glass.apk signed with any
+// other key couldn't update anyone's Glass. Debug builds don't need it.
+def keystoreFile = file(System.getenv('GLASS_KEYSTORE') ?: "${System.getProperty('user.home')}/.glass-tv/keystore.properties")
+def releaseKey = new Properties()
+if (keystoreFile.exists()) keystoreFile.withInputStream { releaseKey.load(it) }
+gradle.taskGraph.whenReady { graph ->
+    if (!releaseKey.storeFile && graph.allTasks.any { it.name == 'packageRelease' }) {
+        throw new GradleException("No release key at ${keystoreFile}. See RELEASING.md, or build a debug APK instead.")
+    }
+}
+
 android {
     namespace 'com.ivantrj.glasslauncher'
     compileSdk 35
@@ -10,9 +22,30 @@ android {
         applicationId 'com.ivantrj.glasslauncher'
         minSdk 28          // Fire OS 7 is Android 9 / API 28; Fire OS 8 is Android 11 / API 30
         targetSdk 30
-        versionCode 1
-        versionName '1.0'
+        versionCode 2
+        versionName '1.1.0'
     }
+
+    signingConfigs {
+        release {
+            if (releaseKey.storeFile) {
+                storeFile file(releaseKey.storeFile)
+                storePassword releaseKey.storePassword
+                keyAlias releaseKey.keyAlias
+                keyPassword releaseKey.keyPassword
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            debuggable true // configure.sh writes Glass's files with run-as, which needs a debuggable app
+            minifyEnabled false
+        }
+    }
+
+    buildFeatures { buildConfig true } // Updater compares BuildConfig.VERSION_NAME with the latest release
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

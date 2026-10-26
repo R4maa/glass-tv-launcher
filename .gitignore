@@ -16,3 +16,6 @@ subcritic-runs/round-3/
 subcritic-runs/round-4/
 subcritic-runs/round-5/
 subcritic-runs/round-6/
+
+# release.sh scratch
+build-release-notes.md

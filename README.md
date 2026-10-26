@@ -12,7 +12,7 @@ No ads, no tracking, a clean home screen, and a koi pond that swims across your 
 [![Licence](https://img.shields.io/badge/licence-MIT_%2B_PolyForm_NC-lightgrey?style=flat-square)](#credits-and-licences)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-support_me-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/rama2019)
 
-[**Features**](#-features) · [**Let your agent do it**](#-let-your-agent-do-it) · [**Manual setup**](#manual-setup) · [**Undo**](#undoing-everything) · [**Credits**](#credits-and-licences)
+[**Features**](#-features) · [**Let your agent do it**](#-let-your-agent-do-it) · [**Manual setup**](#manual-setup) · [**Changelog**](CHANGELOG.md) · [**Undo**](#undoing-everything) · [**Credits**](#credits-and-licences)
 
 <br>
 
@@ -107,12 +107,20 @@ follows your local sunrise, sunset and weather. Any key closes it, and a **Koi P
 
 Switches off Amazon's telemetry, ad and recommendation services and preloaded apps. Every change can be undone.
 
+### 🔄 Updates
+
+Glass checks [GitHub Releases](https://github.com/R4maa/glass-tv-launcher/releases) once a day. When there's a new
+version, the Settings pill reads **Settings · Update** and **Settings › Update to Glass x.y.z** installs it (Fire OS asks you
+to confirm first). Don't want that? [Turn the check off during setup](#turn-off-updates), or later in
+**Settings › Updates**. With it off, Glass only looks for updates when you choose **Check now**. What changed in each
+version is in the [changelog](CHANGELOG.md).
+
 ## What you need
 
 | | |
 |---|---|
 | 📺 **Fire TV Stick** | Fire OS 7 or newer (Android 9+). Built and tested on a Fire TV Stick 4K Max (2nd gen, Fire OS 8.1); see [Compatibility](#compatibility) |
-| 💻 **A computer** | On the same Wi-Fi as the stick, with **git**, **JDK 17+**, the **Android SDK** (Android Studio installs it) and `adb` |
+| 💻 **A computer** | On the same Wi-Fi as the stick, with `adb` ([Android platform-tools](https://developer.android.com/tools/releases/platform-tools): unzip it and add the folder to your PATH, or type the full path to `adb` in the commands below). Building Glass yourself also needs **git**, **JDK 17+** and the **Android SDK** |
 | 🐍 **Python 3** | Only for upstream's debloat shell scripts (macOS/Linux) |
 
 ### Compatibility
@@ -153,29 +161,34 @@ you're doing as you go.
 
 1. Ask me for my Fire TV Stick's IP address (Settings > My Fire TV > About > Network). I
    have already turned on ADB debugging. Don't continue until I've given you the IP.
-2. Check my computer for git, JDK 17 or newer, the Android SDK and adb (adb is in the
-   SDK's platform-tools). If something is missing, tell me what it is and how to install
-   it for my OS, and ask before you install anything.
-3. Clone the repo. In glass-launcher/launcher, write local.properties with sdk.dir set
-   to my Android SDK, then build with the Gradle wrapper (gradlew.bat assembleDebug on
-   Windows, ./gradlew assembleDebug elsewhere). If the build fails, read the error and
-   fix the environment, not the project's code.
+2. Check my computer for adb (Android platform-tools). If it's missing, tell me how to
+   install it for my OS, and ask before you install anything.
+3. Download the latest glass.apk from
+   https://github.com/R4maa/glass-tv-launcher/releases/latest/download/glass.apk
+   into my Downloads folder (or another folder you tell me), and run the adb commands
+   below from that folder.
 4. Run "adb connect <IP>:5555". Tell me to look at the TV, tick "Always allow" and
    accept the "Allow USB debugging?" prompt. Wait for me, then check that "adb devices"
    lists the stick as "device", not "unauthorized".
-5. Install app/build/outputs/apk/debug/app-debug.apk with
-   "adb -s <IP>:5555 install -r -g". Then run the three commands from the README's
-   "Install it on the stick" step that turn on the Glass Home button accessibility
-   service and the Now Playing notification access.
+5. Install glass.apk with "adb -s <IP>:5555 install -r -g glass.apk". If that fails
+   with INSTALL_FAILED_UPDATE_INCOMPATIBLE, an older self-built Glass is installed: tell
+   me, and only after I agree, uninstall it and install again. Then run the four commands
+   from the README's "Install it on the stick" step (two for the Home button service,
+   one for Now Playing access, one that lets Glass install its own updates).
 6. Ask me to press Home on the remote and confirm that Glass opens.
-7. Ask whether I want Glass's koi pond as the screensaver. If yes, tell me to set Fire
+7. Tell me Glass checks GitHub once a day for a new version and offers it in its
+   Settings menu, and ask: "Keep the daily update check on? (yes = keep it, no = turn
+   it off)". If I say no, run
+   "adb -s <IP>:5555 shell am start -n com.ivantrj.glasslauncher/.HomeActivity --ez updateChecks false"
+   (README Manual setup step 3).
+8. Ask whether I want Glass's koi pond as the screensaver. If yes, tell me to set Fire
    TV Settings > Display & Sounds > Screensaver > Start Time to Never. Once I have, run
    the two commands from the README's screensaver step that restore the 15-minute sleep
    timeout.
-8. Do NOT run any debloat script or disable any packages unless I explicitly ask. If I
+9. Do NOT run any debloat script or disable any packages unless I explicitly ask. If I
    ask, show me glass-launcher/debloat/disable-list.txt first and let me remove anything
    I use.
-9. When you're done, summarise what changed and how to undo it (README "Undoing
+10. When you're done, summarise what changed and how to undo it (README "Undoing
    everything"). Remind me to turn off ADB debugging in Developer Options.
 
 Never factory-reset, uninstall Amazon apps, or change settings other than the ones
@@ -193,10 +206,11 @@ listed here.
 | ✅ Will | 🚫 Won't |
 |---|---|
 | Ask for your stick's IP before touching anything | Install missing tools without asking you first |
-| Build Glass from this repo's source | Change the project's code to get past a build error |
+| Download the latest release of Glass | Uninstall an older Glass without asking you |
 | Wait while you accept the debugging prompt on the TV | Disable any Amazon packages unless you ask |
-| Install Glass and turn on its two permissions | Uninstall Amazon apps or factory-reset the stick |
+| Install Glass and turn on its permissions | Uninstall Amazon apps or factory-reset the stick |
 | Check with you that Home opens Glass | Change settings beyond the ones in the prompt |
+| Ask whether Glass should check for updates | Turn update checks off unless you say so |
 | Finish with a summary and how to undo it | Leave you without a reminder to switch ADB debugging off |
 
 </details>
@@ -206,9 +220,36 @@ listed here.
 Prefer to do it yourself? Do the [three steps on the TV](#on-the-tv) first, then:
 
 <details open>
-<summary><b>1 · Build Glass</b></summary>
+<summary><b>1 · Download Glass</b></summary>
 
 <br>
+
+Download **[glass.apk](https://github.com/R4maa/glass-tv-launcher/releases/latest/download/glass.apk)** from the
+[latest release](https://github.com/R4maa/glass-tv-launcher/releases/latest). Your browser saves it in your
+**Downloads** folder; open a terminal there, so the commands below can find it:
+
+```powershell
+cd $HOME\Downloads   # Windows (PowerShell)
+```
+
+```bash
+cd ~/Downloads       # macOS / Linux
+```
+
+</details>
+
+<details>
+<summary><b>…or build it yourself</b></summary>
+
+<br>
+
+A copy you build is signed with your own key, so it can't install updates from Releases: it would offer them and then
+fail to install them. Turn its update check off with the command in step 3, and to get updates later, uninstall it and
+install `glass.apk` instead. The same error appears the other way round too: installing your own build over the
+release fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE` until you uninstall Glass.
+
+On macOS / Linux, [`glass-launcher/install.sh`](glass-launcher/install.sh) builds and installs in one go; it asks about
+update checks (off unless you say yes), or pass `--updates` / `--no-updates`.
 
 **Windows (PowerShell)**
 
@@ -228,8 +269,8 @@ echo "sdk.dir=$HOME/Library/Android/sdk" > local.properties   # or wherever your
 ./gradlew assembleDebug
 ```
 
-The APK lands in `app/build/outputs/apk/debug/app-debug.apk`. The koi pond is already built into the app's assets, so
-you don't need Node unless you change the pond.
+The APK lands in `app/build/outputs/apk/debug/app-debug.apk`; use it in place of `glass.apk` below. The koi pond is
+already built into the app's assets, so you don't need Node unless you change the pond.
 
 </details>
 
@@ -242,30 +283,62 @@ Replace `192.168.1.50` with your stick's IP.
 
 ```bash
 adb connect 192.168.1.50:5555
-adb -s 192.168.1.50:5555 install -r -g app/build/outputs/apk/debug/app-debug.apk
+adb -s 192.168.1.50:5555 install -r -g glass.apk
 ```
 
 > ⚠️ **Watch the TV:** the first connection makes it ask **Allow USB debugging?** Tick **Always allow** and accept, or
 > `adb` will show the stick as `unauthorized`.
 
-Then give Glass the two permissions it needs, once:
+> [!NOTE]
+> **`INSTALL_FAILED_UPDATE_INCOMPATIBLE`?** You have an older Glass that was built from source. Uninstall it first
+> (`adb -s 192.168.1.50:5555 uninstall com.ivantrj.glasslauncher`; your dock order and Glass settings start fresh), then
+> run the install again. If you had turned update checks off, do step 3 again too: uninstalling turns them back on.
+
+Then give Glass the permissions it needs, once:
 
 ```bash
 adb -s 192.168.1.50:5555 shell settings put secure enabled_accessibility_services com.ivantrj.glasslauncher/com.ivantrj.glasslauncher.HomeButtonService
 adb -s 192.168.1.50:5555 shell settings put secure accessibility_enabled 1
 adb -s 192.168.1.50:5555 shell cmd notification allow_listener com.ivantrj.glasslauncher/com.ivantrj.glasslauncher.MediaListener
+adb -s 192.168.1.50:5555 shell appops set com.ivantrj.glasslauncher REQUEST_INSTALL_PACKAGES allow
 ```
 
 - **Glass Home button** (an accessibility service) is how Glass takes over the Home button. Fire OS doesn't let you
   pick another launcher, so this is the standard workaround.
 - **Notification access** lets the Now Playing pill read other apps' media sessions.
+- **Install unknown apps** lets Glass install its own updates. Fire OS still asks you before each one.
 
 Press Home on the remote: you should land in Glass. 🎉
 
 </details>
 
+<a id="turn-off-updates"></a>
+
+<details open>
+<summary><b>3 · Updates: keep or turn off</b></summary>
+
+<br>
+
+Glass checks GitHub once a day for a new version and offers it under **Settings** (see [Updates](#-updates)).
+**To keep that, do nothing.** To turn it off, run this; the TV switches to Glass and confirms it:
+
+```bash
+adb -s 192.168.1.50:5555 shell am start -n com.ivantrj.glasslauncher/.HomeActivity --ez updateChecks false
+```
+
+The TV shows **✓ Glass won't check for updates · Settings › Updates to change**. To switch it back on later, choose
+**Settings › Updates › Check daily** on the TV, or run the same command with `true`:
+
+```bash
+adb -s 192.168.1.50:5555 shell am start -n com.ivantrj.glasslauncher/.HomeActivity --ez updateChecks true
+```
+
+Uninstalling Glass resets this to on, so run the command again if you reinstall.
+
+</details>
+
 <details>
-<summary><b>3 · Let Glass be the screensaver (optional)</b></summary>
+<summary><b>4 · Let Glass be the screensaver (optional)</b></summary>
 
 <br>
 
@@ -281,7 +354,7 @@ adb -s 192.168.1.50:5555 shell settings put secure contextual_screen_off_timeout
 </details>
 
 <details>
-<summary><b>4 · Debloat (optional)</b></summary>
+<summary><b>5 · Debloat (optional)</b></summary>
 
 <br>
 
@@ -315,7 +388,10 @@ you use before running it. See the [upstream README](glass-launcher/README.md) f
 - 📢 Amazon's sponsored row and hero banner come from Amazon's servers and can't be removed by debloating; with Glass
   as your home screen you just don't see them.
 - 🔒 Some Amazon packages are "protected" and can't be disabled, and a Fire OS update may switch disabled ones back on.
-- 🔑 This is a debug build. Installing from a different computer later means uninstalling the old one first.
+- 🔑 Releases are signed with the project's key, so new versions install over the old one. A copy you build yourself
+  is signed with your own key and can't take updates from Releases.
+- 🐞 Release builds are marked *debuggable* so `configure.sh` can write Glass's settings over adb. That only matters
+  while ADB debugging is on, which is one more reason to switch it off when you're done.
 
 <details>
 <summary><b>📁 Repository layout</b></summary>
@@ -329,6 +405,8 @@ you use before running it. See the [upstream README](glass-launcher/README.md) f
 | [`screensaver/build.ps1`](screensaver/build.ps1) | Rebuilds the pond into the launcher's assets (needs Node; only after editing the pond) |
 | [`demo-player/`](demo-player) | A tiny fake music player for testing Now Playing in an emulator, where Spotify won't run |
 | [`firestick-restore.ps1`](firestick-restore.ps1) | Undo script for Windows |
+| [`CHANGELOG.md`](CHANGELOG.md) | What changed in each release |
+| [`RELEASING.md`](RELEASING.md) | How a release is built, signed and published (maintainer) |
 
 </details>
 

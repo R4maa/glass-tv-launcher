@@ -77,6 +77,7 @@ public class HomeActivity extends Activity {
     /** Opened by the Now Playing pill when nothing is playing. */
     private static final String MUSIC_APP = "com.spotify.tv.android";
     private static final int NEUTRAL_GLOW = 0xFF8E8E9E;
+    private static final int UPDATE_ACCENT = 0xFF8FD0FF;
 
     private View root, page, band, glow, pillRow;
     private View[] pills;
@@ -240,6 +241,7 @@ public class HomeActivity extends Activity {
         registerReceiver(packageReceiver, pkgFilter);
 
         loadApps();
+        handleUpdateExtras(getIntent());
     }
 
     @Override
@@ -256,6 +258,14 @@ public class HomeActivity extends Activity {
         loadWallpaper();
         startMedia();
         if (configStamp() != loadedConfigStamp) loadApps(); // dock.txt / hidden.txt edited
+        showSettingsBadge();
+        if (Updater.due(this)) checkForUpdate(false);
+        SharedPreferences home = getSharedPreferences("home", MODE_PRIVATE);
+        String version = Updater.currentVersion(), last = home.getString("lastVersion", null);
+        if (!version.equals(last)) { // first start after an update says so
+            home.edit().putString("lastVersion", version).apply();
+            if (last != null) main.postDelayed(() -> notice("✓  Updated to Glass " + version), 600);
+        }
     }
 
     @Override
@@ -290,6 +300,7 @@ public class HomeActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (handleUpdateExtras(intent)) return;
         if (intent.getBooleanExtra("reload", false)) { // sent by configure.sh
             loadApps();
             wallpaperStamp = -1;
@@ -488,24 +499,132 @@ public class HomeActivity extends Activity {
         }
     }
 
-    /** Settings pill: Fire TV settings and the screensaver. */
+    /** Settings pill: Fire TV settings, the screensaver and updates (plus the update, when there is one). */
     private void openSettingsMenu() {
-        openSettingsMenu(false);
+        openSettingsMenu(null);
     }
 
-    /** onScreensaver: come back from the Screensaver submenu with its row selected. */
-    private void openSettingsMenu(boolean onScreensaver) {
+    /** returnTo: the submenu ("screensaver" / "updates") being left, so its row comes back selected. */
+    private void openSettingsMenu(String returnTo) {
         int minutes = HomeButtonService.screensaverMinutes(this);
+        Updater.Release update = Updater.available(this);
         List<MenuItem> items = new ArrayList<>();
+        if (update != null) {
+            items.add(new MenuItem("Update to Glass " + update.version, "Installs it · your TV asks you to confirm",
+                    () -> installUpdate(update)));
+            items.add(MenuItem.divider());
+        }
         items.add(new MenuItem("Fire TV settings", this::openSettings));
         items.add(MenuItem.divider());
+        int screensaverRow = items.size();
         items.add(new MenuItem("Screensaver  ›", minutes == 0 ? "Off" : "Koi pond after " + minutes + " min idle",
                 this::openScreensaverMenu));
+        int updatesRow = items.size();
+        items.add(new MenuItem("Updates  ›", Updater.enabled(this) ? "Checks for new versions daily" : "Off · checks only when you ask",
+                this::openUpdatesMenu));
         openMenu(pills[PILL_SETTINGS], items);
-        if (onScreensaver) {
-            menuIdx = items.size() - 1;
+        if (returnTo != null) {
+            menuIdx = returnTo.equals("updates") ? updatesRow : screensaverRow;
             updateMenuSelection();
         }
+    }
+
+    /** Updates › : check daily or never (✓ on the current one), and a check right now. */
+    private void openUpdatesMenu() {
+        boolean on = Updater.enabled(this);
+        List<MenuItem> items = new ArrayList<>();
+        items.add(MenuItem.caption("Updates · Glass " + Updater.currentVersion()));
+        items.add(MenuItem.divider());
+        items.add(MenuItem.option("Check daily", on, () -> setUpdateChecks(true)));
+        items.add(MenuItem.option("Off", !on, () -> setUpdateChecks(false)));
+        items.add(MenuItem.divider());
+        items.add(new MenuItem("↻  Check now", () -> checkForUpdate(true)));
+        openMenu(pills[PILL_SETTINGS], items);
+        menuBack = () -> openSettingsMenu("updates"); // Back / Left step up to the Settings menu
+        menuIdx = on ? 2 : 3; // start on the current choice
+        updateMenuSelection();
+    }
+
+    private void setUpdateChecks(boolean on) {
+        Updater.setEnabled(this, on);
+        showSettingsBadge();
+        notice(on ? "✓  Glass checks for new versions daily" : "✓  Automatic checks are off");
+        if (on) checkForUpdate(false);
+    }
+
+    /** Asks GitHub in the background: quiet unless asked (Check now) or a new version turned up. */
+    private void checkForUpdate(boolean asked) {
+        if (asked) notice("Checking for updates…");
+        Context app = getApplicationContext();
+        io.execute(() -> {
+            Updater.Release known = Updater.available(app);
+            Updater.Check result = Updater.check(app);
+            main.post(() -> {
+                showSettingsBadge();
+                Updater.Release update = Updater.available(this);
+                boolean news = update != null && (known == null || !known.version.equals(update.version));
+                if (result == Updater.Check.NEWER && update != null && (asked || news)) {
+                    notice("Glass " + update.version + " is available · Settings › Update");
+                } else if (asked) {
+                    notice(result == Updater.Check.FAILED ? "Couldn't check for updates · is the TV online?"
+                            : "✓  Glass " + Updater.currentVersion() + " is the latest");
+                }
+            });
+        });
+    }
+
+    private void installUpdate(Updater.Release update) {
+        notice("Downloading Glass " + update.version + "…");
+        Context app = getApplicationContext();
+        io.execute(() -> {
+            try {
+                // Each step re-shows the notice, so it stays up for as long as the download runs
+                Updater.install(app, update, percent -> main.post(() -> notice(percent < 0
+                        ? "Downloading Glass " + update.version + "…"
+                        : "Downloading Glass " + update.version + " · " + percent + "%")));
+                // Fire OS's confirm screen follows
+            } catch (Exception e) {
+                main.post(() -> notice("Download failed · open Settings to try again"));
+            }
+        });
+    }
+
+    /** "Settings · Update" on the pill while an update is waiting. */
+    private void showSettingsBadge() {
+        TextView label = (TextView) ((LinearLayout) pills[PILL_SETTINGS]).getChildAt(1);
+        if (Updater.available(this) == null) {
+            label.setText(R.string.settings);
+            return;
+        }
+        SpannableStringBuilder text = new SpannableStringBuilder(getString(R.string.settings)).append(" · ");
+        int start = text.length();
+        text.append("Update");
+        text.setSpan(new ForegroundColorSpan(UPDATE_ACCENT), start, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        text.setSpan(new android.text.style.TypefaceSpan(Fonts.outfit(this, 600)), start, text.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        label.setText(text);
+    }
+
+    /**
+     * Setup turns update checks on or off with {@code am start -n …/.HomeActivity --ez updateChecks false},
+     * and a failed update install comes back with "updateFailed". True if the intent was one of those.
+     */
+    private boolean handleUpdateExtras(Intent intent) {
+        if (intent.hasExtra("updateChecks")) {
+            Updater.setEnabled(this, intent.getBooleanExtra("updateChecks", true));
+            intent.removeExtra("updateChecks");
+            showSettingsBadge();
+            main.postDelayed(() -> notice(Updater.enabled(this) ? "✓  Glass checks for new versions daily"
+                    : "✓  Glass won't check for updates · Settings › Updates to change"), 600);
+            return true;
+        }
+        String failed = intent.getStringExtra("updateFailed");
+        if (failed != null) {
+            intent.removeExtra("updateFailed");
+            main.postDelayed(() -> notice(failed), 600);
+            return true;
+        }
+        return false;
     }
 
     private static final int[] SCREENSAVER_MINUTES = {0, 2, 5, 10, 15, 30};
@@ -525,7 +644,7 @@ public class HomeActivity extends Activity {
         items.add(MenuItem.divider());
         items.add(new MenuItem("▶  Preview now", () -> ScreensaverActivity.start(this)));
         openMenu(pills[PILL_SETTINGS], items);
-        menuBack = () -> openSettingsMenu(true); // Back / Left step up to the Settings menu
+        menuBack = () -> openSettingsMenu("screensaver"); // Back / Left step up to the Settings menu
         if (selected >= 0) { // start on the current choice
             menuIdx = selected;
             updateMenuSelection();

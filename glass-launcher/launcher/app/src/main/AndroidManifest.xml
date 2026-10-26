@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Android 11 only reveals the Wi-Fi name to apps holding location; granted by install.sh -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Installing an update downloaded from GitHub Releases (Settings › Updates) -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <queries>
         <!-- App-store pages, for "get Spotify" when it isn't installed -->
@@ -98,6 +100,9 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+
+        <!-- Hears how an update install went (Updater.install) -->
+        <receiver android:name=".Updater$InstallResult" android:exported="false" />
 
         <!-- Fire OS won't let the Amazon launcher be disabled: this redirects Home to Glass -->
         <service
