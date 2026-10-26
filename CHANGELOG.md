@@ -10,6 +10,10 @@ What changed in each Glass TV release. Download the latest `glass.apk` from
 
 - After Glass updated itself, the TV showed Amazon's home instead of Glass until you pressed Home. Glass now opens
   again by itself as soon as the update is installed, starting with this one.
+- Turning the TV on sometimes left it on Amazon's home. After the stick restarts (Fire OS updates, a power cut), Glass's
+  Home button service and Amazon's home start at the same moment, and when Amazon's home got there first nothing
+  switched it to Glass. Glass now opens itself at start-up, and also whenever the screen comes on with Amazon's home
+  still showing.
 
 ## 1.1.0 · 2026-10-25
 

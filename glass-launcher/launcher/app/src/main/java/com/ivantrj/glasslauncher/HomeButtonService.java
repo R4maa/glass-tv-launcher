@@ -22,7 +22,9 @@ import android.view.accessibility.AccessibilityEvent;
  * home. This service makes Glass the effective home screen instead:
  *  - the remote's Home button is consumed and opens Glass;
  *  - whenever the Amazon launcher comes to the front anyway (after boot, or when
- *    an app exits), Glass is brought straight back on top.
+ *    an app exits), Glass is brought straight back on top;
+ *  - if that moment was missed (the service connected just after Amazon's home appeared
+ *    at boot, or the screen comes on with Amazon's home still up), Glass opens then.
  *  - every key press re-arms the screensaver's idle timer (any app, not just Glass).
  * Event-driven only: it receives window changes and key events, and does
  * nothing in between.
@@ -31,9 +33,20 @@ public class HomeButtonService extends AccessibilityService {
 
     static final String AMAZON_LAUNCHER = "com.amazon.tv.launcher";
     private static final long RECHECK = 60_000L;
+    /** A service that connects this soon after boot was racing Amazon's home to the screen. */
+    private static final long BOOT_WINDOW = 3 * 60_000L;
     private static HomeButtonService running;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private long lastLaunch;
+    /** Amazon's home screen was the last screen to come up (the redirect may have missed it). */
+    private boolean fireHomeOnTop;
+
+    private final android.content.BroadcastReceiver screenOn = new android.content.BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (fireHomeOnTop && !visitingFireHome) openGlass();
+        }
+    };
 
     /**
      * Set by the "Fire TV Home" tile: Amazon's home screen is left alone until the next Home
@@ -89,7 +102,10 @@ public class HomeButtonService extends AccessibilityService {
     protected void onServiceConnected() {
         running = this;
         armScreensaver();
-        if (openAfterUpdate) {
+        registerReceiver(screenOn, new android.content.IntentFilter(Intent.ACTION_SCREEN_ON));
+        // At boot this service and Amazon's home start at the same moment, and when Amazon's home
+        // wins there's no later window change to redirect: open Glass now instead
+        if (openAfterUpdate || SystemClock.elapsedRealtime() < BOOT_WINDOW) {
             openAfterUpdate = false;
             openGlass();
         }
@@ -99,6 +115,11 @@ public class HomeButtonService extends AccessibilityService {
     public void onDestroy() {
         super.onDestroy();
         running = null;
+        try {
+            unregisterReceiver(screenOn);
+        } catch (IllegalArgumentException ignored) {
+            // destroyed before it connected
+        }
         handler.removeCallbacksAndMessages(null);
     }
 
@@ -155,18 +176,31 @@ public class HomeButtonService extends AccessibilityService {
         CharSequence cls = event.getClassName();
         if (pkg == null || cls == null) return;
         if (!AMAZON_LAUNCHER.contentEquals(pkg)) {
-            if (visitingFireHome && isOtherAppsScreen(pkg.toString(), cls.toString())) visitingFireHome = false;
+            boolean ownScreen = pkg.toString().equals(getPackageName()) && isActivity(pkg.toString(), cls.toString());
+            if (ownScreen || isOtherAppsScreen(pkg.toString(), cls.toString())) {
+                fireHomeOnTop = false;
+                if (!ownScreen) visitingFireHome = false;
+            }
             return;
         }
         // Fire OS Settings lives in the launcher's package: opening it also ends a visit (its
         // details pages don't, so Back from one stays on Amazon's home)
-        if (cls.toString().contains("SettingsActivity")) visitingFireHome = false;
-        else if (!visitingFireHome && cls.toString().contains("HomeActivity")) openGlass();
+        if (cls.toString().contains("SettingsActivity")) {
+            visitingFireHome = false;
+            fireHomeOnTop = false;
+        } else if (cls.toString().contains("HomeActivity")) {
+            fireHomeOnTop = true;
+            if (!visitingFireHome) openGlass();
+        }
     }
 
     /** A real activity of another app, not Glass, a system overlay or a popup window. */
     private boolean isOtherAppsScreen(String pkg, String cls) {
         if (pkg.equals(getPackageName()) || pkg.equals("com.android.systemui")) return false;
+        return isActivity(pkg, cls);
+    }
+
+    private boolean isActivity(String pkg, String cls) {
         try {
             getPackageManager().getActivityInfo(new ComponentName(pkg, cls), 0);
             return true;
