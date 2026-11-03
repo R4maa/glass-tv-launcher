@@ -4,6 +4,14 @@ What changed in each Glass TV release. Download the latest `glass.apk` from
 [Releases](https://github.com/R4maa/glass-tv-launcher/releases/latest); Glass also tells you when there's a new one
 (see [Updates](https://github.com/R4maa/glass-tv-launcher#-updates)).
 
+## 1.1.2 · 2026-11-03
+
+### Added
+
+- **Fire OS 6 support (experimental).** Glass now installs on Fire OS 6 sticks (Android 7.1). It's untested on real
+  Fire OS 6 hardware, so please [open an issue](https://github.com/R4maa/glass-tv-launcher/issues) and say what works.
+  On Fire OS 6 the Outfit font shows at one weight, with bold where Glass uses heavier text.
+
 ## 1.1.1 · 2026-10-25
 
 ### Fixed
