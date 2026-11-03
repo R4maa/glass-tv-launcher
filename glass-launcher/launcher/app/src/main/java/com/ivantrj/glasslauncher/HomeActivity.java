@@ -600,8 +600,13 @@ public class HomeActivity extends Activity {
         int start = text.length();
         text.append("Update");
         text.setSpan(new ForegroundColorSpan(UPDATE_ACCENT), start, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        text.setSpan(new android.text.style.TypefaceSpan(Fonts.outfit(this, 600)), start, text.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (android.os.Build.VERSION.SDK_INT >= 28) {
+            text.setSpan(new android.text.style.TypefaceSpan(Fonts.outfit(this, 600)), start, text.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } else {
+            text.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), start, text.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         label.setText(text);
     }
 

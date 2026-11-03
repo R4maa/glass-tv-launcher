@@ -7,7 +7,7 @@
 No ads, no tracking, a clean home screen, and a koi pond that swims across your TV when it's idle.
 
 [![Fire TV](https://img.shields.io/badge/Fire_TV-Stick-FF9900?style=flat-square)](#what-you-need)
-[![Android 9+](https://img.shields.io/badge/Android-9%2B_(API_28)-3DDC84?style=flat-square&logo=android&logoColor=white)](glass-launcher/launcher)
+[![Android 7.1+](https://img.shields.io/badge/Android-7.1%2B_(API_25)-3DDC84?style=flat-square&logo=android&logoColor=white)](glass-launcher/launcher)
 [![No root](https://img.shields.io/badge/root-not_needed-blue?style=flat-square)](#undoing-everything)
 [![Licence](https://img.shields.io/badge/licence-MIT_%2B_PolyForm_NC-lightgrey?style=flat-square)](#credits-and-licences)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-support_me-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/rama2019)
@@ -119,7 +119,7 @@ version is in the [changelog](CHANGELOG.md).
 
 | | |
 |---|---|
-| 📺 **Fire TV Stick** | Fire OS 7 or newer (Android 9+). Built and tested on a Fire TV Stick 4K Max (2nd gen, Fire OS 8.1); see [Compatibility](#compatibility) |
+| 📺 **Fire TV Stick** | Fire OS 6 or newer (Android 7.1+). Built and tested on a Fire TV Stick 4K Max (2nd gen, Fire OS 8.1); see [Compatibility](#compatibility) |
 | 💻 **A computer** | On the same Wi-Fi as the stick, with `adb` ([Android platform-tools](https://developer.android.com/tools/releases/platform-tools): unzip it and add the folder to your PATH, or type the full path to `adb` in the commands below). Building Glass yourself also needs **git**, **JDK 17+** and the **Android SDK** |
 | 🐍 **Python 3** | Only for upstream's debloat shell scripts (macOS/Linux) |
 
@@ -129,9 +129,10 @@ version is in the [changelog](CHANGELOG.md).
 |---|---|---|
 | **8.x** | 11 (API 30) | ✅ Tested on a Fire TV Stick 4K Max (2nd gen, Fire OS 8.1) |
 | **7.x** | 9 (API 28) | 🧪 Installs, but untested on a real stick. The home screen, app grid and app launching work on an Android 9 TV emulator; the Home-button takeover, the Fire TV Home tile and the koi pond (needs WebGL from the stick's WebView) haven't been checked on Fire OS 7 hardware |
-| **6.x and older** | 7.1 and below | ❌ Won't install |
+| **6.x** | 7.1 (API 25) | 🧪 Installs from Glass 1.1.2, but untested on a real stick. Fonts fall back to a plain bold on Fire OS 6. The Home-button takeover, Now Playing and the koi pond (needs WebGL from the stick's WebView) haven't been checked on Fire OS 6 hardware |
+| **5.x and older** | 5.1 and below | ❌ Won't install |
 
-Other Android TV / Google TV devices on Android 9+ can install it too, but they're untested, and the Fire TV–specific parts (Home button, Fire TV Home tile, debloat scripts) won't apply. If you try it on another stick or Fire OS version, please [open an issue](https://github.com/R4maa/glass-tv-launcher/issues) and say what worked.
+Other Android TV / Google TV devices on Android 7.1+ can install it too, but they're untested, and the Fire TV–specific parts (Home button, Fire TV Home tile, debloat scripts) won't apply. If you try it on another stick or Fire OS version, please [open an issue](https://github.com/R4maa/glass-tv-launcher/issues) and say what worked.
 
 <a id="on-the-tv"></a>
 
