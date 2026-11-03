@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glass TV · A calmer Fire TV Stick</title>
+<meta name="description" content="Glass TV is a free, open source home screen for the Fire TV Stick. No ads, no tracking, no root, and a koi pond screensaver that follows your real sky.">
+<link rel="canonical" href="https://r4maa.github.io/glass-tv-launcher/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Glass TV · A calmer Fire TV Stick">
+<meta property="og:description" content="A free home screen for Fire TV without ads or tracking, plus a koi pond screensaver. No root, every change undoable.">
+<meta property="og:url" content="https://r4maa.github.io/glass-tv-launcher/">
+<meta property="og:image" content="https://r4maa.github.io/glass-tv-launcher/home.png">
+<meta property="og:image:alt" content="The Glass home screen on a TV: clock, Now Playing pill and app dock">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<link rel="stylesheet" href="site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Do I need to root my Fire TV Stick?", "acceptedAnswer": {"@type": "Answer", "text": "No. Glass installs over ADB debugging, which Fire OS offers in Developer Options. Nothing is rooted or unlocked."}},
+    {"@type": "Question", "name": "Can I undo it?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Turn off Glass Home button in Fire TV Settings, Accessibility, or run the restore script, which also turns any disabled Amazon packages back on."}},
+    {"@type": "Question", "name": "Which Fire TV Sticks does it work on?", "acceptedAnswer": {"@type": "Answer", "text": "It is tested on Fire OS 8. It installs on Fire OS 7 and Fire OS 6 but has not been tested on real sticks with those versions yet."}},
+    {"@type": "Question", "name": "Does Glass cost anything?", "acceptedAnswer": {"@type": "Answer", "text": "No. Glass is free and open source. There is an optional Ko-fi page if you want to support it."}},
+    {"@type": "Question", "name": "Will my apps still work?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Glass is only a home screen. Netflix, YouTube, Spotify and everything else open exactly as before."}},
+    {"@type": "Question", "name": "Does Glass collect any data?", "acceptedAnswer": {"@type": "Answer", "text": "No. Glass has no analytics. The koi pond looks up your rough location from your IP with ipwho.is and the weather from Open Meteo, and Glass checks GitHub once a day for updates unless you turn that off."}}
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav-wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="#top" aria-label="Glass TV home">
+      <img src="favicon.svg" alt="" width="24" height="24">
+      <span class="title-3">Glass TV</span>
+    </a>
+    <ul class="nav-links">
+      <li><a class="title-4" href="#features">Features</a></li>
+      <li><a class="title-4" href="#pond">Koi pond</a></li>
+      <li><a class="title-4" href="#setup">Setup</a></li>
+      <li><a class="title-4" href="#faq">FAQ</a></li>
+    </ul>
+    <a class="btn btn-sm nav-cta" href="https://github.com/R4maa/glass-tv-launcher/releases/latest">Download</a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+      <span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" hidden>
+  <ul>
+    <li><a class="heading-4" href="#features">Features</a></li>
+    <li><a class="heading-4" href="#pond">Koi pond</a></li>
+    <li><a class="heading-4" href="#setup">Setup</a></li>
+    <li><a class="heading-4" href="#faq">FAQ</a></li>
+    <li><a class="btn btn-md" href="https://github.com/R4maa/glass-tv-launcher/releases/latest">Download Glass</a></li>
+  </ul>
+</div>
+
+<main id="main">
+
+  <!-- Hero -->
+  <section class="hero" id="top">
+    <p class="eyebrow caption-1"><i class="ph ph-television-simple" aria-hidden="true"></i> Free home screen for Fire TV</p>
+    <h1 class="heading-1 hero-title">A calmer Fire TV Stick, <br>without ads or tracking</h1>
+    <p class="body-3 hero-sub">Glass replaces Amazon's billboard of a home screen with your own apps, a Now Playing pill and a koi pond screensaver. No root, and every change can be undone.</p>
+    <div class="hero-actions">
+      <a class="btn btn-lg" href="https://github.com/R4maa/glass-tv-launcher/releases/latest">
+        <i class="ph ph-download-simple" aria-hidden="true"></i> Download Glass free
+      </a>
+    </div>
+    <ul class="proof caption-2" aria-label="At a glance">
+      <li><i class="ph ph-code" aria-hidden="true"></i> Open source, MIT</li>
+      <li><i class="ph ph-lock-key-open" aria-hidden="true"></i> No root needed</li>
+      <li><i class="ph ph-file-arrow-down" aria-hidden="true"></i> About 5 MB</li>
+    </ul>
+    <figure class="hero-shot reveal">
+      <img src="home.png" width="1920" height="1080" alt="The Glass home screen: a large clock, a Now Playing pill, a WiFi and Settings bar, and a dock of four apps over a dark background">
+    </figure>
+  </section>
+
+  <!-- Benefits -->
+  <section class="section" id="features" aria-labelledby="features-title">
+    <div class="section-head reveal">
+      <p class="caption-3 kicker">Features</p>
+      <h2 class="heading-3" id="features-title">Everything on screen is something you chose</h2>
+    </div>
+
+    <div class="bento">
+      <article class="card reveal">
+        <i class="ph ph-house-line card-icon" aria-hidden="true"></i>
+        <h3 class="title-1">Home goes home</h3>
+        <p class="body-6 muted">The Home button opens Glass from anywhere, even inside Netflix or Fire TV Settings. A Fire TV Home tile opens Amazon's screen when you want it.</p>
+      </article>
+      <article class="card reveal">
+        <i class="ph ph-music-notes card-icon" aria-hidden="true"></i>
+        <h3 class="title-1">Now Playing pill</h3>
+        <p class="body-6 muted">Album art, title and artist for whatever is playing on Spotify or YouTube. Press select to pause, Menu to jump into the app.</p>
+      </article>
+      <article class="card card-wide reveal">
+        <div class="card-copy">
+          <i class="ph ph-arrows-out-cardinal card-icon" aria-hidden="true"></i>
+          <h3 class="title-1">Tiles go where you put them</h3>
+          <p class="body-6 muted">Press Menu on any tile, choose Move, and carry it with the arrows. Up from the grid puts an app in your four slot dock.</p>
+        </div>
+        <div class="card-media"><img src="move-mode.png" width="1920" height="1080" loading="lazy" alt="Move mode in Glass: one tile lifted with a blue rim while an instruction bar explains the arrows"></div>
+      </article>
+      <article class="card card-wide reveal">
+        <div class="card-copy">
+          <i class="ph ph-sliders-horizontal card-icon" aria-hidden="true"></i>
+          <h3 class="title-1">A Settings menu that behaves</h3>
+          <p class="body-6 muted">Opens Fire TV Settings directly instead of bouncing through Amazon's home first, and holds the screensaver timer and update options.</p>
+        </div>
+        <div class="card-media"><img src="screensaver-menu.png" width="1920" height="1080" loading="lazy" alt="The Glass Settings menu open on the Screensaver page, with idle times from 2 to 30 minutes and Preview now"></div>
+      </article>
+      <article class="card reveal">
+        <i class="ph ph-arrows-clockwise card-icon" aria-hidden="true"></i>
+        <h3 class="title-1">Updates on your terms</h3>
+        <p class="body-6 muted">Glass checks GitHub once a day and asks before installing anything. Switch the check off during setup or later in Settings.</p>
+      </article>
+      <article class="card reveal">
+        <i class="ph ph-broom card-icon" aria-hidden="true"></i>
+        <h3 class="title-1">Optional debloat</h3>
+        <p class="body-6 muted">A script disables Amazon's telemetry, ad services and preloaded apps. Nothing is uninstalled, and one command turns it all back on.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Tagline reveal -->
+  <section class="tagline" aria-label="Why Glass">
+    <p class="heading-2 tagline-text" data-words>Your TV should feel like furniture, not a billboard. Glass gives the screen back to the shows you picked.</p>
+  </section>
+
+  <!-- Koi pond -->
+  <section class="section" id="pond" aria-labelledby="pond-title">
+    <div class="section-head reveal">
+      <p class="caption-3 kicker">Koi pond screensaver</p>
+      <h2 class="heading-3" id="pond-title">A pond that follows the sky outside your window</h2>
+      <p class="body-3 muted">After 2 to 30 idle minutes, never while something plays, a new pond fills the screen. Fish, lily pads and flowers change every time. The light follows your local sunrise, sunset and weather, and one pond in twenty hides a giant gold or platinum koi.</p>
+    </div>
+
+    <div class="pond-tabs reveal" role="tablist" aria-label="Pond weather">
+      <button class="chip button-sm" role="tab" aria-selected="true" aria-controls="pond-panel" data-src="pond-sunny.jpg" data-alt="The koi pond on a sunny day: orange and white koi under green lily pads">Sunny</button>
+      <button class="chip button-sm" role="tab" aria-selected="false" aria-controls="pond-panel" data-src="pond-sunset.jpg" data-alt="The koi pond at sunset in a warm amber light">Sunset</button>
+      <button class="chip button-sm" role="tab" aria-selected="false" aria-controls="pond-panel" data-src="pond-mist.jpg" data-alt="The koi pond softened by morning mist">Mist</button>
+      <button class="chip button-sm" role="tab" aria-selected="false" aria-controls="pond-panel" data-src="pond-moonlight-rain.jpg" data-alt="The koi pond by moonlight, with rain rings spreading across the water">Moonlight and rain</button>
+    </div>
+    <figure class="pond-frame reveal" id="pond-panel" role="tabpanel">
+      <img id="pond-img" src="pond-sunny.jpg" width="800" height="450" loading="lazy" alt="The koi pond on a sunny day: orange and white koi under green lily pads">
+    </figure>
+    <p class="caption-5 muted center">Pond by <a href="https://github.com/msk1039/nagomi">nagomi</a> from Mayank Kadam, adapted for TV.</p>
+  </section>
+
+  <!-- How it works -->
+  <section class="section" id="setup" aria-labelledby="setup-title">
+    <div class="section-head reveal">
+      <p class="caption-3 kicker">Setup</p>
+      <h2 class="heading-3" id="setup-title">Installed in three steps, about ten minutes</h2>
+      <p class="body-3 muted">You need a computer on the same network as the stick, with <a href="https://developer.android.com/tools/releases/platform-tools">Android platform tools</a> for the <code>adb</code> command.</p>
+    </div>
+
+    <form class="ip-form reveal" novalidate>
+      <label class="title-4" for="ip">Your stick's IP address</label>
+      <div class="ip-row">
+        <input id="ip" name="ip" class="body-3" inputmode="decimal" autocomplete="off" placeholder="192.168.1.50" aria-describedby="ip-help ip-error">
+        <button class="btn btn-md" type="submit">Fill in commands</button>
+      </div>
+      <p id="ip-help" class="caption-5 muted">Find it in Settings, My Fire TV, About, Network. It stays in this page and is never sent anywhere.</p>
+      <p id="ip-error" class="caption-4 error" role="alert" hidden></p>
+    </form>
+
+    <ol class="steps">
+      <li class="step card reveal">
+        <span class="step-num caption-3">1</span>
+        <div>
+          <h3 class="title-1">Turn on ADB debugging</h3>
+          <p class="body-6 muted">In Settings, My Fire TV, About, select the device name seven times to unlock Developer Options. Then switch on ADB debugging there.</p>
+        </div>
+      </li>
+      <li class="step card reveal">
+        <span class="step-num caption-3">2</span>
+        <div>
+          <h3 class="title-1">Install glass.apk</h3>
+          <p class="body-6 muted"><a href="https://github.com/R4maa/glass-tv-launcher/releases/latest/download/glass.apk">Download glass.apk</a>, open a terminal in that folder and run these. Accept the Allow USB debugging prompt on the TV.</p>
+          <div class="code">
+            <pre><code data-cmd>adb connect {ip}:5555
+adb -s {ip}:5555 install -r -g glass.apk</code></pre>
+            <button class="copy button-xsm" type="button"><i class="ph ph-copy" aria-hidden="true"></i><span>Copy</span></button>
+          </div>
+        </div>
+      </li>
+      <li class="step card reveal">
+        <span class="step-num caption-3">3</span>
+        <div>
+          <h3 class="title-1">Give Glass the Home button</h3>
+          <p class="body-6 muted">These let Glass catch the Home button, show Now Playing and install its own updates. Then press Home on the remote.</p>
+          <div class="code">
+            <pre><code data-cmd>adb -s {ip}:5555 shell settings put secure enabled_accessibility_services com.ivantrj.glasslauncher/com.ivantrj.glasslauncher.HomeButtonService
+adb -s {ip}:5555 shell settings put secure accessibility_enabled 1
+adb -s {ip}:5555 shell cmd notification allow_listener com.ivantrj.glasslauncher/com.ivantrj.glasslauncher.MediaListener
+adb -s {ip}:5555 shell appops set com.ivantrj.glasslauncher REQUEST_INSTALL_PACKAGES allow</code></pre>
+            <button class="copy button-xsm" type="button"><i class="ph ph-copy" aria-hidden="true"></i><span>Copy</span></button>
+          </div>
+        </div>
+      </li>
+    </ol>
+
+    <aside class="agent card reveal" aria-labelledby="agent-title">
+      <i class="ph ph-robot card-icon" aria-hidden="true"></i>
+      <div>
+        <h3 class="title-1" id="agent-title">Prefer to let a coding agent do it?</h3>
+        <p class="body-6 muted">Claude Code, Codex or Cursor can run the whole install while you hold the remote. The README has a ready prompt that asks before every change.</p>
+        <a class="link body-5" href="https://github.com/R4maa/glass-tv-launcher#-let-your-agent-do-it">Get the agent prompt <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+      </div>
+    </aside>
+
+    <div class="compat reveal">
+      <h3 class="heading-6">Which sticks it runs on</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="caption-3">Fire OS</th><th class="caption-3">Android</th><th class="caption-3">Status</th></tr></thead>
+          <tbody class="body-6">
+            <tr><td>8.x</td><td>11</td><td><span class="badge ok caption-4"><i class="ph-fill ph-check-circle" aria-hidden="true"></i> Tested</span> on a Fire TV Stick 4K Max</td></tr>
+            <tr><td>7.x</td><td>9</td><td><span class="badge try caption-4"><i class="ph-fill ph-flask" aria-hidden="true"></i> Installs</span> not yet tried on a real stick</td></tr>
+            <tr><td>6.x</td><td>7.1</td><td><span class="badge try caption-4"><i class="ph-fill ph-flask" aria-hidden="true"></i> Installs</span> from 1.1.2, not yet tried on a real stick</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="caption-5 muted">Tried it on Fire OS 6 or 7? <a href="https://github.com/R4maa/glass-tv-launcher/issues">Open an issue</a> and say what worked.</p>
+    </div>
+  </section>
+
+  <!-- Proof: credits -->
+  <section class="section" aria-labelledby="credits-title">
+    <div class="section-head reveal">
+      <p class="caption-3 kicker">Built in the open</p>
+      <h2 class="heading-3" id="credits-title">Standing on two open source projects</h2>
+    </div>
+    <div class="credits">
+      <a class="card credit reveal" href="https://github.com/ivantrj/firetv-glass-launcher">
+        <i class="ph ph-television card-icon" aria-hidden="true"></i>
+        <h3 class="title-1">Fire TV Glass</h3>
+        <p class="caption-4 muted">by ivantrj · MIT</p>
+        <p class="body-6 muted">The original launcher, debloat list and install scripts that Glass TV is forked from.</p>
+      </a>
+      <a class="card credit reveal" href="https://github.com/msk1039/nagomi">
+        <i class="ph ph-fish card-icon" aria-hidden="true"></i>
+        <h3 class="title-1">nagomi</h3>
+        <p class="caption-4 muted">by Mayank Kadam · PolyForm Noncommercial</p>
+        <p class="body-6 muted">The koi pond itself: fish, water, lily pads and weather, with a TV mode added.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="section-head reveal">
+      <p class="caption-3 kicker">FAQ</p>
+      <h2 class="heading-3" id="faq-title">Questions before you install</h2>
+    </div>
+    <div class="faq reveal">
+      <details>
+        <summary class="title-2">Do I need to root my Fire TV Stick?<i class="ph ph-plus" aria-hidden="true"></i></summary>
+        <p class="body-3 muted">No. Glass installs over ADB debugging, which Fire OS offers in Developer Options. Nothing is rooted or unlocked.</p>
+      </details>
+      <details>
+        <summary class="title-2">Can I undo it?<i class="ph ph-plus" aria-hidden="true"></i></summary>
+        <p class="body-3 muted">Yes. On the TV, turn off Glass Home button in Settings, Accessibility. On a computer, the <a href="https://github.com/R4maa/glass-tv-launcher#undoing-everything">restore script</a> also turns any disabled Amazon packages back on.</p>
+      </details>
+      <details>
+        <summary class="title-2">Which Fire TV Sticks does it work on?<i class="ph ph-plus" aria-hidden="true"></i></summary>
+        <p class="body-3 muted">It is tested on Fire OS 8. It installs on Fire OS 7 and 6 too, but nobody has reported back from a real stick on those yet, so the Home button takeover and the koi pond are unconfirmed there.</p>
+      </details>
+      <details>
+        <summary class="title-2">Will my apps still work?<i class="ph ph-plus" aria-hidden="true"></i></summary>
+        <p class="body-3 muted">Yes. Glass is only a home screen. Netflix, YouTube, Spotify and everything else open exactly as before.</p>
+      </details>
+      <details>
+        <summary class="title-2">Does it remove Amazon's ads everywhere?<i class="ph ph-plus" aria-hidden="true"></i></summary>
+        <p class="body-3 muted">The sponsored rows live on Amazon's home screen, which you stop seeing. Ads inside other apps come from those apps and stay.</p>
+      </details>
+      <details>
+        <summary class="title-2">Does Glass collect any data?<i class="ph ph-plus" aria-hidden="true"></i></summary>
+        <p class="body-3 muted">No analytics at all. The pond looks up your rough location from your IP with ipwho.is and the weather from Open Meteo, and Glass checks GitHub once a day for updates unless you switch that off.</p>
+      </details>
+      <details>
+        <summary class="title-2">Does it cost anything?<i class="ph ph-plus" aria-hidden="true"></i></summary>
+        <p class="body-3 muted">No. Glass is free and open source. If it makes your evenings calmer, there is a <a href="https://ko-fi.com/rama2019">Ko-fi page</a>.</p>
+      </details>
+      <details>
+        <summary class="title-2">How smooth is the koi pond?<i class="ph ph-plus" aria-hidden="true"></i></summary>
+        <p class="body-3 muted">On a Fire TV Stick 4K Max it runs at about 20 to 23 frames per second. Older sticks may run it slower.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final reveal" aria-labelledby="final-title">
+    <h2 class="heading-2 hero-title" id="final-title">Give your TV <br>a quieter home screen</h2>
+    <p class="body-3 muted">Free, open source, and one command away from undone.</p>
+    <a class="btn btn-lg" href="https://github.com/R4maa/glass-tv-launcher/releases/latest">
+      <i class="ph ph-download-simple" aria-hidden="true"></i> Download Glass free
+    </a>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-row">
+    <a class="brand" href="#top"><img src="favicon.svg" alt="" width="24" height="24"><span class="title-4">Glass TV</span></a>
+    <ul class="footer-links caption-2">
+      <li><a href="https://github.com/R4maa/glass-tv-launcher">GitHub</a></li>
+      <li><a href="https://github.com/R4maa/glass-tv-launcher/blob/main/CHANGELOG.md">Changelog</a></li>
+      <li><a href="https://github.com/R4maa/glass-tv-launcher#credits-and-licences">Licences</a></li>
+      <li><a href="#privacy">Privacy</a></li>
+      <li><a href="https://ko-fi.com/rama2019">Ko-fi</a></li>
+    </ul>
+  </div>
+  <p id="privacy" class="caption-5 muted">Privacy: this site sets no cookies and runs no analytics. Fonts and icons load from Google Fonts and unpkg. Not affiliated with Amazon. Fire TV is a trademark of Amazon.com, Inc.</p>
+</footer>
+
+<script src="site.js"></script>
+</body>
+</html>
