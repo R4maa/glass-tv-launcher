@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App-style icon of the "Cast" tile (opens screen mirroring): blue card with the cast symbol -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:width="96dp" android:height="96dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="20dp" />
+            <gradient android:angle="315" android:startColor="#FF4F8DF7" android:endColor="#FF1B2F7A" />
+        </shape>
+    </item>
+    <item android:width="60dp" android:height="60dp" android:gravity="center" android:drawable="@drawable/ic_cast" />
+</layer-list>

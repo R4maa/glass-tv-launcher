@@ -73,7 +73,22 @@ before running `./debloat.sh` if you want to keep something.
   print and pro-tips stubs.
 - **Preloaded:** tutorials, Amazon Kids, game hub, website launcher.
 - **Personal picks** (remove the lines if you use them): HBO Max, Live TV, Amazon Music and
-  Photos, phone casting (Fling/DIAL), Miracast, the forced updater.
+  Photos, phone casting (Fling/DIAL), the forced updater. Miracast screen mirroring is kept,
+  because the Cast tile uses it.
+
+## Casting a phone or laptop
+
+The **Cast** tile opens Fire TV's screen-mirroring receiver in one click (it only appears on
+devices that have it). While that screen is open:
+
+- **Samsung phone:** quick panel > Smart View > pick the Fire TV.
+- **Windows 11:** `Win+K` > pick the Fire TV.
+- **iPhone:** the stick has no AirPlay, so install an AirPlay receiver such as AirScreen from the
+  Appstore and let it run in the background; the iPhone can then mirror at any time. The Cast
+  tile's menu (☰) also opens that app.
+
+For the least lag keep the stick and the sending device on 5 GHz Wi-Fi. The koi pond
+screensaver stays off while something is being mirrored.
 
 Fire OS refuses to disable 8 "protected" packages (crash/log managers, `device.metrics`,
 the usage-stats proxy, ad deeplinking, csapp and the core OTA service). They're marked in the

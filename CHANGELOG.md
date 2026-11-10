@@ -4,6 +4,20 @@ What changed in each Glass TV release. Download the latest `glass.apk` from
 [Releases](https://github.com/R4maa/glass-tv-launcher/releases/latest); Glass also tells you when there's a new one
 (see [Updates](https://github.com/R4maa/glass-tv-launcher#-updates)).
 
+## 1.2.0 · 2026-11-09
+
+### Added
+
+- **Cast tile.** One click opens Fire TV's screen-mirroring receiver, so a phone or laptop can mirror to the TV
+  without digging through Amazon's menus (Samsung: Smart View; Windows 11: `Win+K`). The tile only appears on devices
+  that have the receiver. For iPhones, install an AirPlay receiver app such as AirScreen; the Cast tile's menu (☰)
+  opens it.
+- The koi pond screensaver stays off while a phone or laptop is being mirrored.
+
+### Changed
+
+- `debloat.sh` no longer disables Miracast screen mirroring, because the Cast tile uses it.
+
 ## 1.1.2 · 2026-11-03
 
 ### Added

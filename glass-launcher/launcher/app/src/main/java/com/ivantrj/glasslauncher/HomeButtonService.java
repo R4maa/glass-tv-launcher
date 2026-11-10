@@ -48,6 +48,9 @@ public class HomeButtonService extends AccessibilityService {
         }
     };
 
+    /** Package of the activity last brought to the front, as far as window events tell. */
+    private String foreground;
+
     /**
      * Set by the "Fire TV Home" tile: Amazon's home screen is left alone until the next Home
      * press or until another app's screen opens, so it can be browsed. The stick's remote doesn't
@@ -141,6 +144,8 @@ public class HomeButtonService extends AccessibilityService {
 
     private boolean busy() {
         if (!getSystemService(PowerManager.class).isInteractive()) return true;
+        // A mirrored phone or laptop is driven from that device, with no remote keys or media session
+        if (foreground != null && AppLoader.isCastScreen(this, foreground)) return true;
         if (getSystemService(AudioManager.class).isMusicActive()) return true; // films and music both count
         try {
             for (MediaController c : getSystemService(MediaSessionManager.class)
@@ -175,6 +180,7 @@ public class HomeButtonService extends AccessibilityService {
         CharSequence pkg = event.getPackageName();
         CharSequence cls = event.getClassName();
         if (pkg == null || cls == null) return;
+        if (isActivity(pkg.toString(), cls.toString())) foreground = pkg.toString();
         if (!AMAZON_LAUNCHER.contentEquals(pkg)) {
             boolean ownScreen = pkg.toString().equals(getPackageName()) && isActivity(pkg.toString(), cls.toString());
             if (ownScreen || isOtherAppsScreen(pkg.toString(), cls.toString())) {

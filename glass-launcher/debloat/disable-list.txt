@@ -56,8 +56,8 @@ com.amazon.awvflingreceiver
 com.amazon.dialservice
 com.amazon.whisperplay.service.install
 
-## Your choices: Miracast screen mirroring
-com.amazon.cast.sink
+## Miracast screen mirroring: kept, Glass's Cast tile opens it. Uncomment if you never cast.
+# com.amazon.cast.sink
 
 ## Your choices: system updates
 # protected, Fire OS refuses to disable: com.amazon.device.software.ota

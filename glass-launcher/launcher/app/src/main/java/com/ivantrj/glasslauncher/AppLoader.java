@@ -30,9 +30,32 @@ final class AppLoader {
     /** Pseudo package of the "Koi Pond" tile, which starts the screensaver on demand. */
     static final String KOI_POND = "glass.koi-pond";
 
+    /** Pseudo package of the "Cast" tile, which opens Fire TV's screen-mirroring receiver. */
+    static final String CAST = "glass.cast";
+    /** Fire TV's Miracast receiver: phones and laptops can only connect while its screen is open. */
+    static final String CAST_SINK = "com.amazon.cast.sink";
+    private static final String CAST_SINK_ACTIVITY = "com.amazon.cast.sink.DisplayMirroringSinkActivity";
+
     /** Tiles that are Glass's own shortcuts rather than installed apps (no App info page). */
     static boolean isShortcut(String pkg) {
-        return FIRE_HOME.equals(pkg) || KOI_POND.equals(pkg);
+        return FIRE_HOME.equals(pkg) || KOI_POND.equals(pkg) || CAST.equals(pkg);
+    }
+
+    /** Opens the installed AirPlay receiver app (for iPhones, see airplay_packages), or null. */
+    static Intent airplayIntent(Context context) {
+        PackageManager pm = context.getPackageManager();
+        for (String pkg : context.getResources().getStringArray(R.array.airplay_packages)) {
+            Intent launch = pm.getLeanbackLaunchIntentForPackage(pkg);
+            if (launch == null) launch = pm.getLaunchIntentForPackage(pkg);
+            if (launch != null) return launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        return null;
+    }
+
+    /** A screen that is being cast to: nobody presses the remote, but it isn't idle. */
+    static boolean isCastScreen(Context context, String pkg) {
+        if (CAST_SINK.equals(pkg)) return true;
+        return Arrays.asList(context.getResources().getStringArray(R.array.airplay_packages)).contains(pkg);
     }
 
     static final class Result {
@@ -57,6 +80,8 @@ final class AppLoader {
         }
         apps.put(FIRE_HOME, fireHomeTile(context));
         apps.put(KOI_POND, koiPondTile(context));
+        AppInfo cast = castTile(context);
+        if (cast != null) apps.put(CAST, cast);
 
         Result result = new Result();
         List<String> dock = readList(context, "dock.txt");
@@ -132,6 +157,21 @@ final class AppLoader {
         Drawable icon = context.getDrawable(R.drawable.icon_koi_pond);
         Intent pond = new Intent(context, ScreensaverActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return new AppInfo(KOI_POND, "Koi Pond", null, icon, sampleColor(icon), pond);
+    }
+
+    /** Null on devices without the mirroring receiver (or with it disabled), so no dead tile. */
+    private static AppInfo castTile(Context context) {
+        Intent mirror = new Intent().setClassName(CAST_SINK, CAST_SINK_ACTIVITY)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // Intent.resolveActivity trusts an explicit component blindly, so ask the package manager
+        try {
+            ActivityInfo ai = context.getPackageManager().getActivityInfo(mirror.getComponent(), 0);
+            if (!ai.exported || !ai.isEnabled() || !ai.applicationInfo.enabled) return null;
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+        Drawable icon = context.getDrawable(R.drawable.icon_cast);
+        return new AppInfo(CAST, "Cast", null, icon, sampleColor(icon), mirror);
     }
 
     private static AppInfo toApp(PackageManager pm, ActivityInfo ai) {
