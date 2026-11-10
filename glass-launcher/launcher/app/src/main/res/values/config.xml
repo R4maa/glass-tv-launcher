@@ -22,4 +22,11 @@
         <item>com.amazon.ssm</item>
         <item>com.amazon.whasettings</item>
     </string-array>
+
+    <!-- AirPlay receiver apps (for iPhones; the stick has no AirPlay of its own). The first one
+         installed is offered in the Cast tile's menu, and the screensaver stays off over it. -->
+    <string-array name="airplay_packages">
+        <item>com.ionitech.airscreen</item>
+        <item>com.softmedia.receiver</item>
+    </string-array>
 </resources>

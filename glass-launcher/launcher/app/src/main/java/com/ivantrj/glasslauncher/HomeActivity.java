@@ -680,9 +680,17 @@ public class HomeActivity extends Activity {
         if (app.packageName.equals(AppLoader.FIRE_HOME)) {
             items.add(new MenuItem("Opens Amazon's home  ·  Home returns here", null));
         }
+        if (app.packageName.equals(AppLoader.CAST)) {
+            items.add(new MenuItem("Mirror a phone or laptop to this TV", null));
+            Intent airplay = AppLoader.airplayIntent(this);
+            if (airplay != null) {
+                items.add(MenuItem.divider());
+                items.add(new MenuItem("AirPlay receiver (iPhone)", () -> launch(airplay)));
+            }
+        }
         items.add(MenuItem.divider());
         items.add(new MenuItem("Move", this::startMove));
-        // The Fire TV Home and Koi Pond tiles aren't real apps, so they have no info page
+        // Glass's own shortcut tiles aren't real apps, so they have no info page
         if (!AppLoader.isShortcut(app.packageName)) items.add(new MenuItem("App info", this::openAppInfo));
         openMenu(focusedTileView(), items);
     }

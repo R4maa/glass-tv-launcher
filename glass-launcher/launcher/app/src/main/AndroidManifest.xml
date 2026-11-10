@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <queries>
+        <!-- Fire TV's screen-mirroring receiver, for the Cast tile (it has no launcher entry) -->
+        <package android:name="com.amazon.cast.sink" />
         <!-- App-store pages, for "get Spotify" when it isn't installed -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
