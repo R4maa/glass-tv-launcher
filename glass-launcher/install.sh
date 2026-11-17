@@ -67,6 +67,8 @@ if [ -n "$HOME_MODE" ]; then
     *) "$TV" shell "settings put secure enabled_accessibility_services '$CUR:$SVC'" ;;
   esac
   "$TV" shell "settings put secure accessibility_enabled 1"
+  # Lets Glass switch the service back on by itself when Fire OS kills Glass (WebView updates do)
+  "$TV" shell "pm grant $PKG android.permission.WRITE_SECURE_SETTINGS"
 fi
 
 # This copy is signed with your own key, so it can't install releases from GitHub: checks only

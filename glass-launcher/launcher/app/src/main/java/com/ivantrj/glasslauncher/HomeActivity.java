@@ -161,6 +161,7 @@ public class HomeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        HomeButtonService.ensureRunning(this);
         setContentView(R.layout.activity_home);
         density = getResources().getDisplayMetrics().density;
         prefs = getSharedPreferences("focus", MODE_PRIVATE);

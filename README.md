@@ -302,12 +302,16 @@ adb -s 192.168.1.50:5555 shell settings put secure enabled_accessibility_service
 adb -s 192.168.1.50:5555 shell settings put secure accessibility_enabled 1
 adb -s 192.168.1.50:5555 shell cmd notification allow_listener com.ivantrj.glasslauncher/com.ivantrj.glasslauncher.MediaListener
 adb -s 192.168.1.50:5555 shell appops set com.ivantrj.glasslauncher REQUEST_INSTALL_PACKAGES allow
+adb -s 192.168.1.50:5555 shell pm grant com.ivantrj.glasslauncher android.permission.WRITE_SECURE_SETTINGS
 ```
 
 - **Glass Home button** (an accessibility service) is how Glass takes over the Home button. Fire OS doesn't let you
   pick another launcher, so this is the standard workaround.
 - **Notification access** lets the Now Playing pill read other apps' media sessions.
 - **Install unknown apps** lets Glass install its own updates. Fire OS still asks you before each one.
+- **Write secure settings** lets Glass switch Glass Home button back on when Fire OS stops it, which it does every time
+  it updates its built-in web browser engine. Without this, Home opens Amazon's home again until you switch the service
+  back on yourself. Glass uses it for nothing else, and it leaves the service off if you switch it off yourself.
 
 Press Home on the remote: you should land in Glass. 🎉
 

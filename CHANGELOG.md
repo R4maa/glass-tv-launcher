@@ -4,6 +4,26 @@ What changed in each Glass TV release. Download the latest `glass.apk` from
 [Releases](https://github.com/R4maa/glass-tv-launcher/releases/latest); Glass also tells you when there's a new one
 (see [Updates](https://github.com/R4maa/glass-tv-launcher#-updates)).
 
+## 1.2.1 · 2026-11-17
+
+### Fixed
+
+- **Turning the TV on showed Amazon's home instead of Glass, and Home didn't bring Glass back.** When Fire OS updates
+  its built-in web browser engine (it does this overnight, by itself), it stops every app that uses it, Glass
+  included. Android then treats the Glass Home button service as crashed and never starts it again. Glass now switches
+  the service back on by itself a few seconds later, and opens if Amazon's home is on screen at that moment or the next
+  time the TV comes on. If you switched the service off yourself, Glass leaves it off.
+
+  This needs one new permission, which an update can't grant. Run this once (`install.sh` now does it for new
+  installs):
+
+  ```bash
+  adb shell pm grant com.ivantrj.glasslauncher android.permission.WRITE_SECURE_SETTINGS
+  ```
+
+  Without it, Glass works as before. If Home stops opening Glass, switch **Fire TV Settings › Accessibility › Glass
+  Home button** off and on again.
+
 ## 1.2.0 · 2026-11-09
 
 ### Added
