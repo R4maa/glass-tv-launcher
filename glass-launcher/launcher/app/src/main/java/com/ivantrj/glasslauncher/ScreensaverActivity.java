@@ -32,15 +32,15 @@ import java.util.concurrent.Executors;
  *
  * Started by HomeButtonService after the idle time set in Glass's Settings menu, by
  * "Preview now", or on demand from the Koi Pond tile (Glass's grid) or entry (Fire TV's Your Apps). Debug extras for screenshots: --es weather moonlight --ez rain true --ez giant true.
+ *
+ * Runs in its own process (":pond", see the manifest) so the WebView never loads into the process
+ * of HomeButtonService. Nothing here may rely on static state shared with the rest of Glass.
  */
 public class ScreensaverActivity extends Activity {
 
     private static final String TAG = "Screensaver";
     private static final long WEATHER_REFRESH = 15 * 60_000L;
     private static final int GIANT_ODDS = 20;
-
-    /** True while the screensaver is on screen, so the idle timer doesn't stack another. */
-    static volatile boolean showing;
 
     static void start(Context context) {
         context.startActivity(new Intent(context, ScreensaverActivity.class)
@@ -57,7 +57,6 @@ public class ScreensaverActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showing = true;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -159,7 +158,6 @@ public class ScreensaverActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        showing = false;
         main.removeCallbacksAndMessages(null);
         io.shutdownNow();
         if (web != null) {

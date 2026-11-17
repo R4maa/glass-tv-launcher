@@ -11,8 +11,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Android 11 only reveals the Wi-Fi name to apps holding location; granted by install.sh -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- Lets Glass switch its Home button service back on after Android gives up on it (Fire OS
-         kills Glass on every WebView update); granted over adb by install.sh -->
+    <!-- Optional: lets Glass switch its Home button service back on if Android ever gives up on it
+         (see HomeButtonService.ensureRunning); granted over adb by install.sh -->
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
     <!-- Installing an update downloaded from GitHub Releases (Settings › Updates) -->
@@ -70,9 +70,13 @@
         </activity>
 
         <!-- Koi pond screensaver: its own task, so closing it returns to whatever was on screen.
-             Exported (it only shows the pond) so it can be started over ADB for testing. -->
+             Exported (it only shows the pond) so it can be started over ADB for testing.
+             Its own process too: Fire OS kills every process that has the WebView loaded when it
+             updates the WebView, and in Glass's main process that took the Home button service
+             down with it (Android then never restarts the service). -->
         <activity
             android:name=".ScreensaverActivity"
+            android:process=":pond"
             android:exported="true"
             android:launchMode="singleInstance"
             android:taskAffinity=".screensaver"

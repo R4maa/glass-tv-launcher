@@ -64,6 +64,8 @@ public class HomeButtonService extends AccessibilityService {
 
     /** Package of the activity last brought to the front, as far as window events tell. */
     private String foreground;
+    /** The koi pond is the screen in front (it runs in its own process, so window events tell). */
+    private boolean pondShowing;
 
     /**
      * Set by the "Fire TV Home" tile: Amazon's home screen is left alone until the next Home
@@ -127,9 +129,10 @@ public class HomeButtonService extends AccessibilityService {
 
     /**
      * Brings the service back after Android has given up on it. When Glass's process is killed
-     * while the service is bound (Fire OS does this whenever it updates its WebView, which Glass
-     * uses for the koi pond), Android files the service under "crashed services" and never binds
-     * it again on its own: Home stops reaching Glass until the service is switched off and on.
+     * while the service is bound, Android files the service under "crashed services" and never
+     * binds it again on its own: Home stops reaching Glass until the service is switched off and on.
+     * (Fire OS used to do this on every WebView update; since 1.2.2 the pond's WebView runs in its
+     * own process, so that no longer happens. This stays as a safety net for other kills.)
      * Glass does that itself here, if it has been granted WRITE_SECURE_SETTINGS over adb.
      * Called whenever Glass's process comes up (the notification listener is rebound right after
      * such a kill, and Glass's home screen opening). A service the owner switched off on purpose
@@ -238,7 +241,7 @@ public class HomeButtonService extends AccessibilityService {
 
     /** The idle time has passed: show the pond, unless something is playing or the screen is off. */
     private final Runnable idle = () -> {
-        if (ScreensaverActivity.showing) return;
+        if (pondShowing) return;
         if (busy()) {
             handler.postDelayed(this.idle, RECHECK);
             return;
@@ -287,6 +290,7 @@ public class HomeButtonService extends AccessibilityService {
         if (isActivity(pkg.toString(), cls.toString())) {
             foreground = pkg.toString();
             screenUnknown = false;
+            pondShowing = cls.toString().equals(ScreensaverActivity.class.getName());
         }
         if (!AMAZON_LAUNCHER.contentEquals(pkg)) {
             boolean ownScreen = pkg.toString().equals(getPackageName()) && isActivity(pkg.toString(), cls.toString());

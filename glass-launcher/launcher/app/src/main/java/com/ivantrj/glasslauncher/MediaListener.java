@@ -8,7 +8,8 @@ import android.service.notification.NotificationListenerService;
  * It reads no notifications. Granted over adb:
  *   cmd notification allow_listener com.ivantrj.glasslauncher/com.ivantrj.glasslauncher.MediaListener
  * Android rebinds it (restarting Glass's process) right after the process is killed, unlike the
- * Home button service, so it is also where Glass notices that service is gone and repairs it.
+ * Home button service, so it is also where Glass notices that service is gone and repairs it
+ * (only with the optional WRITE_SECURE_SETTINGS grant).
  */
 public class MediaListener extends NotificationListenerService {
     @Override

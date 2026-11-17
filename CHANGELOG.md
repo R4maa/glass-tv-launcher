@@ -4,6 +4,17 @@ What changed in each Glass TV release. Download the latest `glass.apk` from
 [Releases](https://github.com/R4maa/glass-tv-launcher/releases/latest); Glass also tells you when there's a new one
 (see [Updates](https://github.com/R4maa/glass-tv-launcher#-updates)).
 
+## 1.2.2 · 2026-11-17
+
+### Fixed
+
+- **The 1.2.1 fix now works for everyone, with no extra permission.** Fire OS only stopped Glass during a web engine
+  update because the koi pond's web view ran inside Glass itself. The pond now runs separately, so the update closes
+  only the pond (if it's open) and the Glass Home button keeps working. You don't need to run anything after updating.
+  The `adb shell pm grant` command from 1.2.1 is now optional: it lets Glass recover if the service is ever stopped
+  some other way.
+- Glass uses less memory while you're browsing, because the pond's web engine is no longer loaded into it.
+
 ## 1.2.1 · 2026-11-17
 
 ### Fixed
